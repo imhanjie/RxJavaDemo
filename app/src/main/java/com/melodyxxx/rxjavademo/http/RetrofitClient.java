@@ -36,8 +36,6 @@ public class RetrofitClient {
 
     private static Context sContext;
 
-    private static RetrofitClient INSTANCE;
-
     private ApiService mApiService;
 
     private OkHttpClient mOkHttpClient;
@@ -53,13 +51,7 @@ public class RetrofitClient {
         return SingletonHolder.INSTANCE;
     }
 
-    public static RetrofitClient getInstance(Context context, String url) {
-        INSTANCE = new RetrofitClient(context, url);
-        return INSTANCE;
-    }
-
     private RetrofitClient(Context context) {
-
         this(context, null);
     }
 
@@ -101,19 +93,6 @@ public class RetrofitClient {
                     @Override
                     public T apply(@NonNull String s) throws Exception {
                         return new Gson().fromJson(s, token.getType());
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
-    }
-
-    public <T> void get(final String url, Map<String, String> parameters, Observer<T> observer) {
-        mApiService.get(url, parameters)
-                .subscribeOn(Schedulers.io())
-                .map(new Function<String, T>() {
-                    @Override
-                    public T apply(@NonNull String s) throws Exception {
-                        return new Gson().fromJson(s, new TypeToken<T>(){}.getType());
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
